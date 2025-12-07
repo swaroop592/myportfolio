@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import AssistantChat from "./components/AssistantChat";
 
 export default function HomePage() {
   const [form, setForm] = useState({
@@ -244,6 +245,8 @@ export default function HomePage() {
           </form>
         </section>
       </main>
+      <AssistantChat />
+
     </div>
   );
 }
