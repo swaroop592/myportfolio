@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -59,6 +60,13 @@ export default function Home() {
             Documentation
           </a>
         </div>
+<Link
+        href="/contact"
+        className="mt-8 px-4 py-2 border rounded text-sm hover:bg-gray-100"
+      >
+        Contact Me
+      </Link>
+        
       </main>
     </div>
   );
