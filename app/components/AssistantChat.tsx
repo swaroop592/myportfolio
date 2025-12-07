@@ -39,7 +39,7 @@ export default function AssistantChat() {
       const res = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ userMessage: trimmed }),
       });
 
       if (!res.ok) {
