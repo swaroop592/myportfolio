@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import AssistantChat from "./components/AssistantChat";
 import Image from "next/image";
 
 type Status = "idle" | "loading" | "success" | "error";
+type Theme = "light" | "dark";
 
 const projects = [
   {
@@ -81,9 +82,9 @@ const books = [
   {
     title: "Atomic Habits",
     author: "James Clear",
-    image: "/books/atomic-habits.jpg", // place this in /public/books
+    image: "/books/atomic-habits.jpg",
     description:
-      "A playbook for building systems instead of goals. Helped me design sustainable study, coding, and training routines.",
+      "A playbook for systems over goals. Helped me design sustainable study, coding, and training routines.",
     link: "https://jamesclear.com/atomic-habits",
   },
   {
@@ -102,6 +103,7 @@ const books = [
       "Influenced how I think about modularity, boundaries, and long-term maintainability in backend and AI services.",
     link: "https://www.oreilly.com/library/view/clean-architecture/9780134494272/",
   },
+  // add more books later, the scroll will handle it
 ];
 
 export default function HomePage() {
@@ -114,6 +116,32 @@ export default function HomePage() {
   });
 
   const [status, setStatus] = useState<Status>("idle");
+  const [theme, setTheme] = useState<Theme>("dark");
+
+  // Load theme from localStorage (if any)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem("theme") as Theme | null;
+    if (stored === "light" || stored === "dark") {
+      setTheme(stored);
+      document.documentElement.dataset.theme = stored;
+    } else {
+      // default to dark
+      document.documentElement.dataset.theme = "dark";
+    }
+  }, []);
+
+  // Toggle theme and persist
+  function toggleTheme() {
+    setTheme(prev => {
+      const next: Theme = prev === "dark" ? "light" : "dark";
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("theme", next);
+        document.documentElement.dataset.theme = next;
+      }
+      return next;
+    });
+  }
 
   function updateField(field: keyof typeof form, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -143,56 +171,122 @@ export default function HomePage() {
       } else {
         setStatus("error");
       }
-    } catch (err) {
+    } catch {
       setStatus("error");
     } finally {
       setTimeout(() => setStatus("idle"), 4000);
     }
   }
 
+  const isDark = theme === "dark";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50">
+    <div
+      className={
+        "min-h-screen transition-colors duration-300 " +
+        (isDark
+          ? "bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-50"
+          : "bg-slate-50 text-slate-900")
+      }
+    >
       {/* Top nav */}
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/80 backdrop-blur">
+      <header
+        className={
+          "sticky top-0 z-20 border-b backdrop-blur " +
+          (isDark
+            ? "border-white/10 bg-slate-950/80"
+            : "border-slate-200 bg-white/80")
+        }
+      >
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-sm font-semibold">
+            <div
+              className={
+                "flex h-8 w-8 items-center justify-center rounded-lg text-sm font-semibold " +
+                (isDark ? "bg-blue-600 text-white" : "bg-blue-600 text-white")
+              }
+            >
               JK
             </div>
             <div className="text-sm font-medium tracking-tight">
-              <span className="text-slate-200">Jyothiswaroop</span>{" "}
-              <span className="text-slate-400">Koyya</span>
+              <span className={isDark ? "text-slate-200" : "text-slate-900"}>
+                Jyothiswaroop
+              </span>{" "}
+              <span className={isDark ? "text-slate-400" : "text-slate-500"}>
+                Koyya
+              </span>
             </div>
           </div>
-          <nav className="hidden gap-6 text-xs font-medium text-slate-300 sm:flex">
-            <a href="#home" className="hover:text-blue-400">
+
+          <nav className="hidden gap-6 text-xs font-medium sm:flex">
+            <a
+              href="#home"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               Home
             </a>
-            <a href="#about" className="hover:text-blue-400">
+            <a
+              href="#about"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               About
             </a>
-            <a href="#skills" className="hover:text-blue-400">
+            <a
+              href="#skills"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               Skills
             </a>
-            <a href="#projects" className="hover:text-blue-400">
+            <a
+              href="#projects"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               Projects
             </a>
-            <a href="#certifications" className="hover:text-blue-400">
+            <a
+              href="#certifications"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               Certifications
             </a>
-            <a href="#books" className="hover:text-blue-400">
+            <a
+              href="#books"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               Books
             </a>
-            <a href="#contact" className="hover:text-blue-400">
+            <a
+              href="#contact"
+              className={isDark ? "hover:text-blue-400" : "hover:text-blue-600"}
+            >
               Contact
             </a>
           </nav>
-          <a
-            href="#contact"
-            className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
-          >
-            Let&apos;s Connect
-          </a>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className={
+                "flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-colors " +
+                (isDark
+                  ? "border-slate-700 bg-slate-900 text-slate-200 hover:border-blue-400"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-blue-500")
+              }
+            >
+              <span>{isDark ? "🌞 Light" : "🌙 Dark"}</span>
+            </button>
+            <a
+              href="#contact"
+              className={
+                "rounded-full px-3 py-1 text-xs font-semibold shadow-sm " +
+                (isDark
+                  ? "bg-blue-600 text-white hover:bg-blue-500"
+                  : "bg-blue-600 text-white hover:bg-blue-500")
+              }
+            >
+              Let&apos;s Connect
+            </a>
+          </div>
         </div>
       </header>
 
@@ -203,43 +297,95 @@ export default function HomePage() {
           className="flex min-h-[70vh] flex-col justify-center gap-10 py-10 md:flex-row md:items-center"
         >
           <div className="flex-1 space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400">
+            <p
+              className={
+                "text-xs font-semibold uppercase tracking-[0.2em] " +
+                (isDark ? "text-blue-400" : "text-blue-600")
+              }
+            >
               Software Engineer · Full-Stack · Cloud & Infra
             </p>
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               I build reliable{" "}
-              <span className="text-blue-400">systems</span> and{" "}
-              <span className="text-blue-400">tools</span> for people.
+              <span className={isDark ? "text-blue-400" : "text-blue-600"}>
+                systems
+              </span>{" "}
+              and{" "}
+              <span className={isDark ? "text-blue-400" : "text-blue-600"}>
+                tools
+              </span>{" "}
+              for people.
             </h1>
-            <p className="max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
+            <p
+              className={
+                "max-w-xl text-sm leading-relaxed sm:text-base " +
+                (isDark ? "text-slate-300" : "text-slate-700")
+              }
+            >
               I&apos;m Jyothiswaroop, a developer who enjoys working where{" "}
-              <span className="font-medium text-slate-100">
+              <span
+                className={
+                  "font-medium " +
+                  (isDark ? "text-slate-100" : "text-slate-900")
+                }
+              >
                 backend engineering, AI, and infrastructure
               </span>{" "}
               meet. I like turning messy requirements into clean architectures,
               scalable services, and observable systems.
             </p>
             <div className="flex flex-wrap gap-3 text-xs">
-              <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-blue-200">
+              <span
+                className={
+                  "rounded-full border px-3 py-1 " +
+                  (isDark
+                    ? "border-blue-500/30 bg-blue-500/10 text-blue-200"
+                    : "border-blue-200 bg-blue-50 text-blue-700")
+                }
+              >
                 AI / ML & LLM-powered services
               </span>
-              <span className="rounded-full border border-slate-500/40 bg-slate-800/60 px-3 py-1 text-slate-200">
+              <span
+                className={
+                  "rounded-full border px-3 py-1 " +
+                  (isDark
+                    ? "border-slate-500/40 bg-slate-800/60 text-slate-200"
+                    : "border-slate-300 bg-white text-slate-700")
+                }
+              >
                 Full-stack web apps
               </span>
-              <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-200">
+              <span
+                className={
+                  "rounded-full border px-3 py-1 " +
+                  (isDark
+                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                    : "border-emerald-200 bg-emerald-50 text-emerald-700")
+                }
+              >
                 Cloud & enterprise IT
               </span>
             </div>
             <div className="flex flex-wrap gap-3 pt-2">
               <a
                 href="#projects"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-500"
+                className={
+                  "rounded-lg px-4 py-2 text-sm font-semibold shadow " +
+                  (isDark
+                    ? "bg-blue-600 text-white hover:bg-blue-500"
+                    : "bg-blue-600 text-white hover:bg-blue-500")
+                }
               >
                 View projects
               </a>
               <a
                 href="#contact"
-                className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-100 hover:border-blue-400 hover:text-blue-300"
+                className={
+                  "rounded-lg border px-4 py-2 text-sm font-semibold " +
+                  (isDark
+                    ? "border-slate-600 text-slate-100 hover:border-blue-400 hover:text-blue-300"
+                    : "border-slate-300 text-slate-800 hover:border-blue-500 hover:text-blue-700")
+                }
               >
                 Contact me
               </a>
@@ -248,70 +394,158 @@ export default function HomePage() {
 
           {/* Hero side card */}
           <div className="mt-6 flex flex-1 justify-center md:mt-0">
-            <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 p-4 shadow-xl">
-              <div className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+            <div
+              className={
+                "relative w-full max-w-sm overflow-hidden rounded-2xl border p-4 shadow-xl " +
+                (isDark
+                  ? "border-slate-800 bg-slate-900/70"
+                  : "border-slate-200 bg-white/80")
+              }
+            >
+              <div
+                className={
+                  "mb-4 text-xs font-semibold uppercase tracking-[0.2em] " +
+                  (isDark ? "text-slate-400" : "text-slate-500")
+                }
+              >
                 Currently focusing on
               </div>
-              <ul className="space-y-3 text-xs text-slate-200">
+              <ul
+                className={
+                  "space-y-3 text-xs " +
+                  (isDark ? "text-slate-200" : "text-slate-700")
+                }
+              >
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-blue-400" />
+                  <span
+                    className={
+                      "mt-1 h-1.5 w-1.5 rounded-full " +
+                      (isDark ? "bg-blue-400" : "bg-blue-500")
+                    }
+                  />
                   Designing small, composable backend services that are easy to
                   monitor, test, and change.
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  <span
+                    className={
+                      "mt-1 h-1.5 w-1.5 rounded-full " +
+                      (isDark ? "bg-emerald-400" : "bg-emerald-500")
+                    }
+                  />
                   Building analytics-ready data flows into tools like{" "}
-                  <span className="font-medium text-slate-100">
+                  <span
+                    className={
+                      "font-medium " +
+                      (isDark ? "text-slate-100" : "text-slate-900")
+                    }
+                  >
                     Microsoft Fabric & Power BI
                   </span>
                   .
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-400" />
+                  <span
+                    className={
+                      "mt-1 h-1.5 w-1.5 rounded-full " +
+                      (isDark ? "bg-amber-400" : "bg-amber-500")
+                    }
+                  />
                   Integrating{" "}
-                  <span className="font-medium text-slate-100">
+                  <span
+                    className={
+                      "font-medium " +
+                      (isDark ? "text-slate-100" : "text-slate-900")
+                    }
+                  >
                     LLMs and retrieval
                   </span>{" "}
                   into real applications, not just demos.
                 </li>
               </ul>
-              <div className="mt-5 rounded-lg border border-slate-700 bg-slate-900/80 p-3 text-xs text-slate-300">
-                Based in <span className="font-semibold">Las Cruces, NM</span>,
-                open to hybrid and remote roles.
+              <div
+                className={
+                  "mt-5 rounded-lg border p-3 text-xs " +
+                  (isDark
+                    ? "border-slate-700 bg-slate-900/80 text-slate-300"
+                    : "border-slate-200 bg-slate-50 text-slate-700")
+                }
+              >
+                Based in{" "}
+                <span className="font-semibold">Las Cruces, NM</span>, open to
+                hybrid and remote roles.
               </div>
             </div>
           </div>
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="border-t border-slate-800 py-14">
+        <section
+          id="about"
+          className={
+            "border-t py-14 " +
+            (isDark ? "border-slate-800" : "border-slate-200")
+          }
+        >
           <div className="grid gap-10 md:grid-cols-[1.3fr,1fr]">
             <div>
               <h2 className="mb-3 text-2xl font-semibold tracking-tight">
                 About
               </h2>
-              <p className="mb-3 text-sm leading-relaxed text-slate-300 sm:text-base">
+              <p
+                className={
+                  "mb-3 text-sm leading-relaxed sm:text-base " +
+                  (isDark ? "text-slate-300" : "text-slate-700")
+                }
+              >
                 I have experience across{" "}
-                <span className="font-medium text-slate-100">
+                <span
+                  className={
+                    "font-medium " +
+                    (isDark ? "text-slate-100" : "text-slate-900")
+                  }
+                >
                   AI/ML, full-stack development, and enterprise IT
                 </span>
                 . I like taking ideas from a rough concept to something that&apos;s
                 deployed, observable, and used by real people.
               </p>
-              <p className="mb-3 text-sm leading-relaxed text-slate-300 sm:text-base">
+              <p
+                className={
+                  "mb-3 text-sm leading-relaxed sm:text-base " +
+                  (isDark ? "text-slate-300" : "text-slate-700")
+                }
+              >
                 I care about clean interfaces between systems, automating repeat
                 work, and leaving things better than I found them. Whether it&apos;s
                 an internal tool, a data pipeline, or an end-user app, I try to
                 design with both developers and users in mind.
               </p>
-              <p className="text-sm leading-relaxed text-slate-300 sm:text-base">
+              <p
+                className={
+                  "text-sm leading-relaxed sm:text-base " +
+                  (isDark ? "text-slate-300" : "text-slate-700")
+                }
+              >
                 Outside of code, you&apos;ll often find me learning from books,
                 experimenting with ML projects, or tracking training on platforms
                 like Strava.
               </p>
             </div>
-            <div className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-slate-200">
-              <h3 className="text-sm font-semibold text-slate-100">
+            <div
+              className={
+                "space-y-4 rounded-2xl border p-4 text-xs " +
+                (isDark
+                  ? "border-slate-800 bg-slate-900/60 text-slate-200"
+                  : "border-slate-200 bg-white text-slate-700")
+              }
+            >
+              <h3
+                className={
+                  "text-sm font-semibold " +
+                  (isDark ? "text-slate-100" : "text-slate-900")
+                }
+              >
                 What I&apos;m good at
               </h3>
               <ul className="space-y-2">
@@ -325,66 +559,140 @@ export default function HomePage() {
         </section>
 
         {/* SKILLS */}
-        <section id="skills" className="border-t border-slate-800 py-14">
+        <section
+          id="skills"
+          className={
+            "border-t py-14 " +
+            (isDark ? "border-slate-800" : "border-slate-200")
+          }
+        >
           <h2 className="mb-6 text-2xl font-semibold tracking-tight">Skills</h2>
           <div className="grid gap-6 text-sm md:grid-cols-3">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-slate-100">
-                AI / Data
-              </h3>
-              <ul className="space-y-1 text-slate-300">
-                <li>Python · PyTorch · basic TensorFlow</li>
-                <li>LLMs, RAG, embeddings, prompt workflows</li>
-                <li>ETL, feature engineering, data pipelines</li>
-                <li>Experiment tracking & evaluation</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-slate-100">
-                Backend / Web
-              </h3>
-              <ul className="space-y-1 text-slate-300">
-                <li>Node.js, TypeScript, Next.js</li>
-                <li>REST APIs, authentication, RBAC</li>
-                <li>Postgres, Supabase, SQL</li>
-                <li>Testing, logging, error tracking</li>
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-              <h3 className="mb-2 text-sm font-semibold text-slate-100">
-                Cloud / Infra & Enterprise IT
-              </h3>
-              <ul className="space-y-1 text-slate-300">
-                <li>Docker, CI/CD, deployment pipelines</li>
-                <li>Microsoft Fabric, Power BI, OneLake</li>
-                <li>Networking, virtualization, monitoring</li>
-                <li>Security-aware configuration & ops</li>
-              </ul>
-            </div>
+            {[
+              {
+                title: "AI / Data",
+                items: [
+                  "Python · PyTorch · basic TensorFlow",
+                  "LLMs, RAG, embeddings, prompt workflows",
+                  "ETL, feature engineering, data pipelines",
+                  "Experiment tracking & evaluation",
+                ],
+              },
+              {
+                title: "Backend / Web",
+                items: [
+                  "Node.js, TypeScript, Next.js",
+                  "REST APIs, authentication, RBAC",
+                  "Postgres, Supabase, SQL",
+                  "Testing, logging, error tracking",
+                ],
+              },
+              {
+                title: "Cloud / Infra & Enterprise IT",
+                items: [
+                  "Docker, CI/CD, deployment pipelines",
+                  "Microsoft Fabric, Power BI, OneLake",
+                  "Networking, virtualization, monitoring",
+                  "Security-aware configuration & ops",
+                ],
+              },
+            ].map(box => (
+              <div
+                key={box.title}
+                className={
+                  "rounded-2xl border p-4 " +
+                  (isDark
+                    ? "border-slate-800 bg-slate-900/60"
+                    : "border-slate-200 bg-white")
+                }
+              >
+                <h3
+                  className={
+                    "mb-2 text-sm font-semibold " +
+                    (isDark ? "text-slate-100" : "text-slate-900")
+                  }
+                >
+                  {box.title}
+                </h3>
+                <ul
+                  className={
+                    "space-y-1 " +
+                    (isDark ? "text-slate-300" : "text-slate-700")
+                  }
+                >
+                  {box.items.map(item => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* PROJECTS */}
-        <section id="projects" className="border-t border-slate-800 py-14">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight">
+        {/* PROJECTS with horizontal scroll */}
+        <section
+          id="projects"
+          className={
+            "border-t py-14 " +
+            (isDark ? "border-slate-800" : "border-slate-200")
+          }
+        >
+          <h2 className="mb-2 text-2xl font-semibold tracking-tight">
             Selected Projects
           </h2>
-          <div className="grid gap-6 md:grid-cols-2">
+          <p
+            className={
+              "mb-4 text-sm " +
+              (isDark ? "text-slate-300" : "text-slate-700")
+            }
+          >
+            Scroll horizontally to explore more projects on smaller screens.
+          </p>
+          <div
+            className={
+              "no-scrollbar flex gap-6 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible"
+            }
+          >
             {projects.map(project => (
               <article
                 key={project.title}
-                className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-4 shadow-sm"
+                className={
+                  "flex min-w-[260px] flex-col rounded-2xl border p-4 shadow-sm snap-start md:min-w-0 " +
+                  (isDark
+                    ? "border-slate-800 bg-slate-900/70"
+                    : "border-slate-200 bg-white")
+                }
               >
-                <div className="mb-1 text-sm font-semibold text-slate-50">
+                <div
+                  className={
+                    "mb-1 text-sm font-semibold " +
+                    (isDark ? "text-slate-50" : "text-slate-900")
+                  }
+                >
                   {project.title}
                 </div>
-                <div className="mb-2 text-[11px] uppercase tracking-wide text-blue-300">
+                <div
+                  className={
+                    "mb-2 text-[11px] uppercase tracking-wide " +
+                    (isDark ? "text-blue-300" : "text-blue-700")
+                  }
+                >
                   {project.stack}
                 </div>
-                <p className="mb-3 text-xs leading-relaxed text-slate-300">
+                <p
+                  className={
+                    "mb-3 text-xs leading-relaxed " +
+                    (isDark ? "text-slate-300" : "text-slate-700")
+                  }
+                >
                   {project.description}
                 </p>
-                <ul className="mb-3 space-y-1 text-[11px] text-slate-400">
+                <ul
+                  className={
+                    "mb-3 space-y-1 text-[11px] " +
+                    (isDark ? "text-slate-400" : "text-slate-600")
+                  }
+                >
                   {project.highlights.map(h => (
                     <li key={h}>• {h}</li>
                   ))}
@@ -397,7 +705,10 @@ export default function HomePage() {
         {/* CERTIFICATIONS */}
         <section
           id="certifications"
-          className="border-t border-slate-800 py-14"
+          className={
+            "border-t py-14 " +
+            (isDark ? "border-slate-800" : "border-slate-200")
+          }
         >
           <h2 className="mb-6 text-2xl font-semibold tracking-tight">
             Certifications & Learning
@@ -406,37 +717,80 @@ export default function HomePage() {
             {certifications.map(cert => (
               <div
                 key={cert.name}
-                className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-xs"
+                className={
+                  "flex flex-col rounded-2xl border p-4 text-xs " +
+                  (isDark
+                    ? "border-slate-800 bg-slate-900/60"
+                    : "border-slate-200 bg-white")
+                }
               >
-                <div className="mb-1 text-sm font-semibold text-slate-50">
+                <div
+                  className={
+                    "mb-1 text-sm font-semibold " +
+                    (isDark ? "text-slate-50" : "text-slate-900")
+                  }
+                >
                   {cert.name}
                 </div>
-                <div className="mb-1 text-[11px] font-medium text-blue-300">
+                <div
+                  className={
+                    "mb-1 text-[11px] font-medium " +
+                    (isDark ? "text-blue-300" : "text-blue-700")
+                  }
+                >
                   {cert.issuer}
                 </div>
-                <div className="mb-2 text-[11px] text-slate-400">
+                <div
+                  className={
+                    "mb-2 text-[11px] " +
+                    (isDark ? "text-slate-400" : "text-slate-500")
+                  }
+                >
                   {cert.year}
                 </div>
-                <p className="text-slate-300">{cert.description}</p>
+                <p
+                  className={
+                    isDark ? "text-slate-300" : "text-slate-700"
+                  }
+                >
+                  {cert.description}
+                </p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* BOOKS */}
-        <section id="books" className="border-t border-slate-800 py-14">
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight">
+        {/* BOOKS with horizontal scroll */}
+        <section
+          id="books"
+          className={
+            "border-t py-14 " +
+            (isDark ? "border-slate-800" : "border-slate-200")
+          }
+        >
+          <h2 className="mb-2 text-2xl font-semibold tracking-tight">
             Books that influenced me
           </h2>
-          <p className="mb-4 text-sm text-slate-300 sm:max-w-2xl">
+          <p
+            className={
+              "mb-4 text-sm sm:max-w-2xl " +
+              (isDark ? "text-slate-300" : "text-slate-700")
+            }
+          >
             I learn a lot from books. These are a few that shaped how I think
-            about systems, focus, and long-term growth.
+            about systems, focus, and long-term growth. Scroll horizontally to
+            see more.
           </p>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="no-scrollbar flex gap-6 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
             {books.map(book => (
               <article
                 key={book.title}
-                className="flex flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70"
+                className={
+                  "flex min-w-[240px] snap-start flex-col overflow-hidden rounded-2xl border md:min-w-0 " +
+                  (isDark
+                    ? "border-slate-800 bg-slate-900/70"
+                    : "border-slate-200 bg-white")
+                }
               >
                 <div className="relative h-44 w-full">
                   <Image
@@ -447,18 +801,38 @@ export default function HomePage() {
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-4 text-xs">
-                  <div className="text-sm font-semibold text-slate-50">
+                  <div
+                    className={
+                      "text-sm font-semibold " +
+                      (isDark ? "text-slate-50" : "text-slate-900")
+                    }
+                  >
                     {book.title}
                   </div>
-                  <div className="mb-2 text-[11px] text-slate-400">
+                  <div
+                    className={
+                      "mb-2 text-[11px] " +
+                      (isDark ? "text-slate-400" : "text-slate-500")
+                    }
+                  >
                     {book.author}
                   </div>
-                  <p className="mb-3 text-slate-300">{book.description}</p>
+                  <p
+                    className={
+                      "mb-3 " +
+                      (isDark ? "text-slate-300" : "text-slate-700")
+                    }
+                  >
+                    {book.description}
+                  </p>
                   <a
                     href={book.link}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-auto text-[11px] font-semibold text-blue-300 hover:text-blue-200"
+                    className={
+                      "mt-auto text-[11px] font-semibold " +
+                      (isDark ? "text-blue-300 hover:text-blue-200" : "text-blue-700 hover:text-blue-600")
+                    }
                   >
                     Open book &rarr;
                   </a>
@@ -466,29 +840,55 @@ export default function HomePage() {
               </article>
             ))}
           </div>
-          <p className="mt-3 text-[11px] text-slate-500">
-            Tip: store covers as images under <code>/public/books</code> and
-            adjust the paths above.
+          <p
+            className={
+              "mt-3 text-[11px] " +
+              (isDark ? "text-slate-500" : "text-slate-500")
+            }
+          >
+            Store covers as images under <code>/public/books</code> and adjust
+            paths if needed.
           </p>
         </section>
 
         {/* CONTACT */}
-        <section id="contact" className="border-t border-slate-800 py-14">
+        <section
+          id="contact"
+          className={
+            "border-t py-14 " +
+            (isDark ? "border-slate-800" : "border-slate-200")
+          }
+        >
           <h2 className="mb-4 text-2xl font-semibold tracking-tight">
             Contact
           </h2>
-          <p className="mb-6 text-sm text-slate-300 sm:max-w-xl">
+          <p
+            className={
+              "mb-6 text-sm sm:max-w-xl " +
+              (isDark ? "text-slate-300" : "text-slate-700")
+            }
+          >
             Interested in working together, mentoring, or talking about a
             project? Send me a message and I&apos;ll get back to you.
           </p>
 
           <form
             onSubmit={handleSubmit}
-            className="grid max-w-xl gap-4 rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-sm shadow"
+            className={
+              "grid max-w-xl gap-4 rounded-2xl border p-5 text-sm shadow " +
+              (isDark
+                ? "border-slate-800 bg-slate-950/60"
+                : "border-slate-200 bg-white")
+            }
           >
             <div className="grid gap-4 md:grid-cols-2">
               <input
-                className="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:outline-none"
+                className={
+                  "w-full rounded-lg border px-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-400 " +
+                  (isDark
+                    ? "border-slate-700 bg-slate-900/60 text-slate-100"
+                    : "border-slate-300 bg-slate-50 text-slate-900")
+                }
                 placeholder="Your name *"
                 value={form.name}
                 onChange={e => updateField("name", e.target.value)}
@@ -496,7 +896,12 @@ export default function HomePage() {
               />
               <input
                 type="email"
-                className="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:outline-none"
+                className={
+                  "w-full rounded-lg border px-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-400 " +
+                  (isDark
+                    ? "border-slate-700 bg-slate-900/60 text-slate-100"
+                    : "border-slate-300 bg-slate-50 text-slate-900")
+                }
                 placeholder="Email"
                 value={form.email}
                 onChange={e => updateField("email", e.target.value)}
@@ -505,13 +910,23 @@ export default function HomePage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <input
-                className="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:outline-none"
+                className={
+                  "w-full rounded-lg border px-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-400 " +
+                  (isDark
+                    ? "border-slate-700 bg-slate-900/60 text-slate-100"
+                    : "border-slate-300 bg-slate-50 text-slate-900")
+                }
                 placeholder="Phone"
                 value={form.phone}
                 onChange={e => updateField("phone", e.target.value)}
               />
               <input
-                className="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:outline-none"
+                className={
+                  "w-full rounded-lg border px-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-400 " +
+                  (isDark
+                    ? "border-slate-700 bg-slate-900/60 text-slate-100"
+                    : "border-slate-300 bg-slate-50 text-slate-900")
+                }
                 placeholder="Subject"
                 value={form.subject}
                 onChange={e => updateField("subject", e.target.value)}
@@ -519,7 +934,12 @@ export default function HomePage() {
             </div>
 
             <textarea
-              className="min-h-[130px] w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:outline-none"
+              className={
+                "min-h-[130px] w-full rounded-lg border px-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-400 " +
+                (isDark
+                  ? "border-slate-700 bg-slate-900/60 text-slate-100"
+                  : "border-slate-300 bg-slate-50 text-slate-900")
+              }
               placeholder="Your message *"
               value={form.message}
               onChange={e => updateField("message", e.target.value)}
@@ -530,17 +950,32 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-blue-900"
+                className={
+                  "rounded-lg px-4 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-70 " +
+                  (isDark
+                    ? "bg-blue-600 text-white hover:bg-blue-500"
+                    : "bg-blue-600 text-white hover:bg-blue-500")
+                }
               >
                 {status === "loading" ? "Sending..." : "Send message"}
               </button>
               {status === "success" && (
-                <p className="text-[11px] text-emerald-300">
+                <p
+                  className={
+                    "text-[11px] " +
+                    (isDark ? "text-emerald-300" : "text-emerald-600")
+                  }
+                >
                   Thanks! I&apos;ll contact you soon.
                 </p>
               )}
               {status === "error" && (
-                <p className="text-[11px] text-rose-300">
+                <p
+                  className={
+                    "text-[11px] " +
+                    (isDark ? "text-rose-300" : "text-rose-600")
+                  }
+                >
                   Something went wrong. Please try again.
                 </p>
               )}
@@ -550,23 +985,43 @@ export default function HomePage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-slate-800 bg-slate-950/90">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+      <footer
+        className={
+          "border-t " +
+          (isDark ? "border-slate-800 bg-slate-950/90" : "border-slate-200 bg-white")
+        }
+      >
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 text-xs sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <div className="font-medium text-slate-200">
+            <div
+              className={
+                "font-medium " +
+                (isDark ? "text-slate-200" : "text-slate-900")
+              }
+            >
               Built by Jyothiswaroop Koyya
             </div>
-            <div className="text-[11px] text-slate-500">
+            <div
+              className={
+                "text-[11px] " +
+                (isDark ? "text-slate-500" : "text-slate-500")
+              }
+            >
               © {new Date().getFullYear()} Jyothiswaroop Koyya. All rights
               reserved.
             </div>
           </div>
-          <div className="flex flex-wrap gap-4">
+          <div
+            className={
+              "flex flex-wrap gap-4 " +
+              (isDark ? "text-slate-400" : "text-slate-600")
+            }
+          >
             <a
               href="https://www.linkedin.com/"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-blue-300"
+              className="hover:text-blue-400"
             >
               LinkedIn
             </a>
@@ -574,7 +1029,7 @@ export default function HomePage() {
               href="https://leetcode.com/"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-amber-300"
+              className="hover:text-amber-400"
             >
               LeetCode
             </a>
@@ -582,13 +1037,13 @@ export default function HomePage() {
               href="https://www.strava.com/"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-orange-300"
+              className="hover:text-orange-400"
             >
               Strava
             </a>
             <a
               href="mailto:your@email.com"
-              className="hover:text-emerald-300"
+              className="hover:text-emerald-400"
             >
               Email
             </a>
