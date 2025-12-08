@@ -630,226 +630,221 @@ export default function HomePage() {
         </section>
 
         {/* PROJECTS with horizontal scroll */}
-        <section
-          id="projects"
+       <section
+  id="projects"
+  className={
+    "border-t py-14 " +
+    (isDark ? "border-slate-800" : "border-slate-200")
+  }
+>
+  <h2 className="mb-2 text-2xl font-semibold tracking-tight">
+    Selected Projects
+  </h2>
+  <p
+    className={
+      "mb-4 text-sm " +
+      (isDark ? "text-slate-300" : "text-slate-700")
+    }
+  >
+    A few projects that show how I think about systems, data, and real users.
+  </p>
+
+  {/* HORIZONTAL SCROLL ROW */}
+  <div className="no-scrollbar flex flex-nowrap gap-6 overflow-x-auto pb-2 snap-x snap-mandatory">
+    {projects.map(project => (
+      <article
+        key={project.title}
+        className={
+          "flex min-w-[260px] snap-start flex-col rounded-2xl border p-4 shadow-sm " +
+          (isDark
+            ? "border-slate-800 bg-slate-900/70"
+            : "border-slate-200 bg-white")
+        }
+      >
+        <div
           className={
-            "border-t py-14 " +
-            (isDark ? "border-slate-800" : "border-slate-200")
+            "mb-1 text-sm font-semibold " +
+            (isDark ? "text-slate-50" : "text-slate-900")
           }
         >
-          <h2 className="mb-2 text-2xl font-semibold tracking-tight">
-            Selected Projects
-          </h2>
-          <p
-            className={
-              "mb-4 text-sm " +
-              (isDark ? "text-slate-300" : "text-slate-700")
-            }
-          >
-            Scroll horizontally to explore more projects on smaller screens.
-          </p>
-          <div
-            className={
-              "no-scrollbar flex gap-6 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible"
-            }
-          >
-            {projects.map(project => (
-              <article
-                key={project.title}
-                className={
-                  "flex min-w-[260px] flex-col rounded-2xl border p-4 shadow-sm snap-start md:min-w-0 " +
-                  (isDark
-                    ? "border-slate-800 bg-slate-900/70"
-                    : "border-slate-200 bg-white")
-                }
-              >
-                <div
-                  className={
-                    "mb-1 text-sm font-semibold " +
-                    (isDark ? "text-slate-50" : "text-slate-900")
-                  }
-                >
-                  {project.title}
-                </div>
-                <div
-                  className={
-                    "mb-2 text-[11px] uppercase tracking-wide " +
-                    (isDark ? "text-blue-300" : "text-blue-700")
-                  }
-                >
-                  {project.stack}
-                </div>
-                <p
-                  className={
-                    "mb-3 text-xs leading-relaxed " +
-                    (isDark ? "text-slate-300" : "text-slate-700")
-                  }
-                >
-                  {project.description}
-                </p>
-                <ul
-                  className={
-                    "mb-3 space-y-1 text-[11px] " +
-                    (isDark ? "text-slate-400" : "text-slate-600")
-                  }
-                >
-                  {project.highlights.map(h => (
-                    <li key={h}>• {h}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </section>
+          {project.title}
+        </div>
+        <div
+          className={
+            "mb-2 text-[11px] uppercase tracking-wide " +
+            (isDark ? "text-blue-300" : "text-blue-700")
+          }
+        >
+          {project.stack}
+        </div>
+        <p
+          className={
+            "mb-3 text-xs leading-relaxed " +
+            (isDark ? "text-slate-300" : "text-slate-700")
+          }
+        >
+          {project.description}
+        </p>
+        <ul
+          className={
+            "mb-3 space-y-1 text-[11px] " +
+            (isDark ? "text-slate-400" : "text-slate-600")
+          }
+        >
+          {project.highlights.map(h => (
+            <li key={h}>• {h}</li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>
+
 
         {/* CERTIFICATIONS */}
-        <section
-          id="certifications"
+       <section
+  id="certifications"
+  className={
+    "border-t py-14 " +
+    (isDark ? "border-slate-800" : "border-slate-200")
+  }
+>
+  <h2 className="mb-6 text-2xl font-semibold tracking-tight">
+    Certifications & Learning
+  </h2>
+
+  <div className="no-scrollbar flex flex-nowrap gap-6 overflow-x-auto pb-2 snap-x snap-mandatory">
+    {certifications.map(cert => (
+      <div
+        key={cert.name}
+        className={
+          "flex min-w-[240px] snap-start flex-col rounded-2xl border p-4 text-xs " +
+          (isDark
+            ? "border-slate-800 bg-slate-900/60"
+            : "border-slate-200 bg-white")
+        }
+      >
+        <div
           className={
-            "border-t py-14 " +
-            (isDark ? "border-slate-800" : "border-slate-200")
+            "mb-1 text-sm font-semibold " +
+            (isDark ? "text-slate-50" : "text-slate-900")
           }
         >
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight">
-            Certifications & Learning
-          </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {certifications.map(cert => (
-              <div
-                key={cert.name}
-                className={
-                  "flex flex-col rounded-2xl border p-4 text-xs " +
-                  (isDark
-                    ? "border-slate-800 bg-slate-900/60"
-                    : "border-slate-200 bg-white")
-                }
-              >
-                <div
-                  className={
-                    "mb-1 text-sm font-semibold " +
-                    (isDark ? "text-slate-50" : "text-slate-900")
-                  }
-                >
-                  {cert.name}
-                </div>
-                <div
-                  className={
-                    "mb-1 text-[11px] font-medium " +
-                    (isDark ? "text-blue-300" : "text-blue-700")
-                  }
-                >
-                  {cert.issuer}
-                </div>
-                <div
-                  className={
-                    "mb-2 text-[11px] " +
-                    (isDark ? "text-slate-400" : "text-slate-500")
-                  }
-                >
-                  {cert.year}
-                </div>
-                <p
-                  className={
-                    isDark ? "text-slate-300" : "text-slate-700"
-                  }
-                >
-                  {cert.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+          {cert.name}
+        </div>
+        <div
+          className={
+            "mb-1 text-[11px] font-medium " +
+            (isDark ? "text-blue-300" : "text-blue-700")
+          }
+        >
+          {cert.issuer}
+        </div>
+        <div
+          className={
+            "mb-2 text-[11px] " +
+            (isDark ? "text-slate-400" : "text-slate-500")
+          }
+        >
+          {cert.year}
+        </div>
+        <p className={isDark ? "text-slate-300" : "text-slate-700"}>
+          {cert.description}
+        </p>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* BOOKS with horizontal scroll */}
-        <section
-          id="books"
-          className={
-            "border-t py-14 " +
-            (isDark ? "border-slate-800" : "border-slate-200")
-          }
-        >
-          <h2 className="mb-2 text-2xl font-semibold tracking-tight">
-            Books that influenced me
-          </h2>
+       <section
+  id="books"
+  className={
+    "border-t py-14 " +
+    (isDark ? "border-slate-800" : "border-slate-200")
+  }
+>
+  <h2 className="mb-2 text-2xl font-semibold tracking-tight">
+    Books that influenced me
+  </h2>
+  <p
+    className={
+      "mb-4 text-sm sm:max-w-2xl " +
+      (isDark ? "text-slate-300" : "text-slate-700")
+    }
+  >
+    I learn a lot from books. These are a few that shaped how I think
+    about systems, focus, and long-term growth.
+  </p>
+
+  <div className="no-scrollbar flex flex-nowrap gap-6 overflow-x-auto pb-2 snap-x snap-mandatory">
+    {books.map(book => (
+      <article
+        key={book.title}
+        className={
+          "flex min-w-[240px] snap-start flex-col overflow-hidden rounded-2xl border " +
+          (isDark
+            ? "border-slate-800 bg-slate-900/70"
+            : "border-slate-200 bg-white")
+        }
+      >
+        <div className="relative h-44 w-full">
+          <Image
+            src={book.image}
+            alt={book.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="flex flex-1 flex-col p-4 text-xs">
+          <div
+            className={
+              "text-sm font-semibold " +
+              (isDark ? "text-slate-50" : "text-slate-900")
+            }
+          >
+            {book.title}
+          </div>
+          <div
+            className={
+              "mb-2 text-[11px] " +
+              (isDark ? "text-slate-400" : "text-slate-500")
+            }
+          >
+            {book.author}
+          </div>
           <p
             className={
-              "mb-4 text-sm sm:max-w-2xl " +
+              "mb-3 " +
               (isDark ? "text-slate-300" : "text-slate-700")
             }
           >
-            I learn a lot from books. These are a few that shaped how I think
-            about systems, focus, and long-term growth. Scroll horizontally to
-            see more.
+            {book.description}
           </p>
-          <div className="no-scrollbar flex gap-6 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible">
-            {books.map(book => (
-              <article
-                key={book.title}
-                className={
-                  "flex min-w-[240px] snap-start flex-col overflow-hidden rounded-2xl border md:min-w-0 " +
-                  (isDark
-                    ? "border-slate-800 bg-slate-900/70"
-                    : "border-slate-200 bg-white")
-                }
-              >
-                <div className="relative h-44 w-full">
-                  <Image
-                    src={book.image}
-                    alt={book.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col p-4 text-xs">
-                  <div
-                    className={
-                      "text-sm font-semibold " +
-                      (isDark ? "text-slate-50" : "text-slate-900")
-                    }
-                  >
-                    {book.title}
-                  </div>
-                  <div
-                    className={
-                      "mb-2 text-[11px] " +
-                      (isDark ? "text-slate-400" : "text-slate-500")
-                    }
-                  >
-                    {book.author}
-                  </div>
-                  <p
-                    className={
-                      "mb-3 " +
-                      (isDark ? "text-slate-300" : "text-slate-700")
-                    }
-                  >
-                    {book.description}
-                  </p>
-                  <a
-                    href={book.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={
-                      "mt-auto text-[11px] font-semibold " +
-                      (isDark ? "text-blue-300 hover:text-blue-200" : "text-blue-700 hover:text-blue-600")
-                    }
-                  >
-                    Open book &rarr;
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p
+          <a
+            href={book.link}
+            target="_blank"
+            rel="noreferrer"
             className={
-              "mt-3 text-[11px] " +
-              (isDark ? "text-slate-500" : "text-slate-500")
+              "mt-auto text-[11px] font-semibold " +
+              (isDark
+                ? "text-blue-300 hover:text-blue-200"
+                : "text-blue-700 hover:text-blue-600")
             }
           >
-            Store covers as images under <code>/public/books</code> and adjust
-            paths if needed.
-          </p>
-        </section>
+            Open book &rarr;
+          </a>
+        </div>
+      </article>
+    ))}
+  </div>
+{/* 
+  Store covers under /public/books and adjust paths if needed.
+  This note is for development reference only.
+*/}
+
+</section>
+
 
         {/* CONTACT */}
         <section
